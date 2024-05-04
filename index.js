@@ -37,6 +37,29 @@ const client = new MongoClient(uri, {
     }
 });
 
+const verifyToken =(req,res,next)=>{
+    const token = req.cookies.token
+    console.log( 'middlewre', token);
+    if(!token){
+
+        return res.status(401).sand({message: 'No Authorized'})
+    }
+
+    jwt.verify(token, process.env.ACCESS_TOKEN, (err, decoded)=> {
+       if(err){
+        console.log(err);
+        return res.status(401).sand({message: 'No Authorized'})
+       }
+       req.userInfo=decoded;
+       next();
+
+      });
+
+    
+
+}
+
+
 async function run() {
     try {
 
@@ -62,9 +85,9 @@ async function run() {
     })
 
         // get news all datat 
-        app.get('/news', async (req, res) => {
-            const token = req.cookies
-            console.log(token,'tok tokiii dd ');
+        app.get('/news', verifyToken, async (req, res) => {
+            const token = req.cookies.token
+            console.log( 'user Info ------', req.userInfo);
                         const cursor = newsCollection.find()
                         const result = await cursor.toArray()
                         res.send(result)
