@@ -64,7 +64,7 @@ async function run() {
         // get news all datat 
         app.get('/news', async (req, res) => {
             const token = req.cookies
-            console.log(token,'tok tokiii ');
+            console.log(token,'tok tokiii dd ');
                         const cursor = newsCollection.find()
                         const result = await cursor.toArray()
                         res.send(result)
